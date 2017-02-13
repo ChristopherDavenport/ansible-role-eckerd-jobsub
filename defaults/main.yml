@@ -1,0 +1,10 @@
+---
+
+eckerd_jobsub_root: /u02/eckerd
+eckerd_jobsub_home: "{{ eckerd_jobsub_root }}/banner"
+eckerd_jobsub_data_home: "{{ eckerd_jobsub_root }}/persistence"
+
+# eckerd_jobsub_repo:
+# eckerd_jobsub_repo_branch:
+
+eckerd_jobsub_recompile: false

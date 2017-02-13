@@ -1,0 +1,65 @@
+---
+
+- name: Add Packages For Eckerd Code
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - perl-DBI
+    - expect
+
+- name: Create Eckerd Root Folder
+  become: yes
+  file:
+    path: "{{ eckerd_jobsub_root }}"
+    state: directory
+    owner: "{{ banner_user }}"
+    group: "{{ banner_group }}"
+
+- name: Create Eckerd Home Folder
+  become: yes
+  file:
+    path: "{{ eckerd_jobsub_home }}"
+    state: directory
+    owner: "{{ banner_user }}"
+    group: "{{ banner_group }}"
+
+- name: Download Eckerd Customizations Archive From Git
+  become: yes
+  become_user: "{{ banner_user }}"
+  register: __eckerd_jobsub_git_update
+  git:
+    repo: "{{ eckerd_jobsub_repo }}"
+    version: "{{ eckerd_jobsub_repo_branch }}"
+    dest: "{{ eckerd_jobsub_home }}"
+    update: yes
+    key_file: "{{ banner_banner_user_home }}/.ssh/{{ banner_key_file }}"
+    accept_hostkey: yes
+
+- name: Add Eckerd Environmental Variables
+  become: yes
+  template:
+    src: eckerd-banner-ansible.sh.j2
+    dest: /etc/profile.d/eckerd-banner-ansible.sh
+    owner: root
+    group: root
+    mode: 0755
+  tags: environmental_variables
+
+- name: Install Jobsub Service
+  become: yes
+  template:
+    src: jobsub.service.j2
+    dest: /etc/systemd/system/jobsub.service
+    owner: root
+    group: root
+    mode: 0544
+
+- name: Install SleepWake Service
+  become: yes
+  template:
+    src: "sleepwake@.service.j2"
+    dest: /etc/systemd/system/sleepwake@.service
+    owner: root
+    group: root
+    mode: 544

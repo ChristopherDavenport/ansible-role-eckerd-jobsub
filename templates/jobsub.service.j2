@@ -1,0 +1,15 @@
+[Unit]
+Description=Ellucian Banner Jobsub
+After=network.target
+
+[Service]
+Type=forking
+User={{ banner_jobsub_user }}
+WorkingDirectory={{ banner_jobsub_home }}
+Environment=ECKERD_HOME={{ eckerd_jobsub_home }}
+ExecStart={{ eckerd_jobsub_home }}/util/bash/jobsub.sh start
+ExecStop={{ eckerd_jobsub_home }}/util/bash/jobsub.sh stop
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
