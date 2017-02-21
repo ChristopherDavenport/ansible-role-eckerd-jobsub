@@ -40,7 +40,7 @@
   become: yes
   template:
     src: eckerd-banner-ansible.sh.j2
-    dest: /etc/profile.d/eckerd-banner-ansible.sh
+    dest: /etc/profile.d/eckerd-banner.sh
     owner: root
     group: root
     mode: 0755
